@@ -10,7 +10,7 @@ angular.module('ra.form').
         var actions = $scope[attr.raForm];
 
         // Make sure an update callback is passed
-        if (_.isFunction(actions.update) === false) {
+        if (_.isUndefined(actions) || _.isFunction(actions.update) === false) {
           throw new Error(
             'You must provide an update callback. e.g. <form ra-form="form_events">,' +
             'where $scope.form_events = { update: callbackFn }'
