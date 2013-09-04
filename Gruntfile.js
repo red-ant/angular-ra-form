@@ -62,6 +62,10 @@
         dist: {
           configFile: 'karma.conf.js'
         }
+      },
+
+      bump: {
+        files: ['package.json', 'component.json']
       }
     });
 
