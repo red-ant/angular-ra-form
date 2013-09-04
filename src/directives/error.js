@@ -2,24 +2,24 @@
 
 angular.module('ra.form').
 
-  directive('errorFor', function() {
+    directive('errorFor', function() {
     return {
       restrict:   'A',
       replace:    true,
       scope:      true,
-      template:   '<p class="form-error" ng-show="error_count > 0" ng-transclude></p>',
+      template:   '<p class="form-error" ng-show="errors.length > 0" ng-transclude></p>',
       transclude: true,
       controller: function($scope, $element, $attrs) {
-        $scope.error_count = 0;
+        $scope.errors = [];
 
-        this.show = function() {
-          $scope.error_count++;
+        this.show = function(type) {
+          if (!_.contains($scope.errors, type)) {
+            $scope.errors.push(type);
+          }
         };
 
-        this.hide = function() {
-          if ($scope.error_count > 0) {
-            $scope.error_count--;
-          }
+        this.hide = function(type) {
+          $scope.errors = _.reject($scope.errors, type);
         };
 
         this.name = $attrs.errorFor;
@@ -64,13 +64,13 @@ angular.module('ra.form').
             $scope.show_error = true;
 
             if (error_for) {
-              error_for.show();
+              error_for.show(type);
             }
           } else {
             $scope.show_error = false;
 
             if (error_for) {
-              error_for.hide();
+              error_for.hide(type);
             }
           }
         });
