@@ -3,8 +3,8 @@
 angular.module('ra.form').
 
   factory('raForm', function() {
-    return {
-      actions: {
+    return function() {
+      return {
         initialized: true,
         submitting: false,
         submitCallbacks: [],
@@ -83,6 +83,6 @@ angular.module('ra.form').
             this.showErrorsOnInValid();
           }
         }
-      }
+      };
     };
   });

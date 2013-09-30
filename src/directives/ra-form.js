@@ -17,7 +17,11 @@ angular.module('ra.form').
           );
         }
 
-        $scope[controller.$name] = _.extend($scope[controller.$name], raForm.actions, actions);
+        var form_controller = $scope[controller.$name];
+        _.extend(form_controller, raForm());
+        _.extend(form_controller, actions);
+
+        $scope[controller.$name] = form_controller;
       }
     };
   });

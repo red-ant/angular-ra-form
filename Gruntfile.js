@@ -28,9 +28,16 @@
         }
       },
 
+      ngmin: {
+        dist: {
+          src: ['angular-ra-form.js'],
+          dest: 'angular-ra-form.min.js'
+        }
+      },
+
       uglify: {
         dist: {
-          src:  ['src/angular-ra-form.js', 'src/**/*.js'],
+          src: ['angular-ra-form.min.js'],
           dest: 'angular-ra-form.min.js'
         }
       },
@@ -74,6 +81,6 @@
     });
 
     grunt.registerTask('test', 'karma:dev');
-    grunt.registerTask('build', ['jshint:all', 'bower', 'clean', 'concat:dist', 'uglify:dist']);
+    grunt.registerTask('build', ['jshint:all', 'bower', 'clean', 'concat', 'ngmin', 'uglify']);
   };
 })();
