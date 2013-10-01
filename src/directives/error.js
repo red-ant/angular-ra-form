@@ -51,29 +51,52 @@ angular.module('ra.form').
           type  = _.str.trim(validation_exp[1]);
         }
 
-        var hasError = function() {
-          var has_error = $scope[form.$name] &&
-                          $scope[form.$name][field] &&
-                          $scope[form.$name][field].$error[type];
-
-          return has_error;
+        var getField = function() {
+          var form_field = $scope[form.$name] && $scope[form.$name][field];
+          return form_field;
         };
 
-        $scope.$watch(form.$name + '.' + field + '.show_errors', function(show_errors) {
-          if (show_errors && hasError()) {
-            $scope.show_error = true;
+        var hasError = function() {
+          var field = getField();
+          return !!(field && field.$error[type]);
+        };
 
-            if (error_for) {
-              error_for.show(type);
-            }
+        var showErrors = function() {
+          var field = getField();
+          return !!(field && field.show_errors);
+        };
+
+        $scope.$watch(showErrors, function(value) {
+          if (value === true && hasError() === true) {
+            displayErrors();
           } else {
-            $scope.show_error = false;
-
-            if (error_for) {
-              error_for.hide(type);
-            }
+            hideErrors();
           }
         });
+
+        $scope.$watch(hasError, function(value) {
+          if (showErrors() === true && value === true) {
+            displayErrors();
+          } else {
+            hideErrors();
+          }
+        });
+
+        var displayErrors = function() {
+          $scope.show_error = true;
+
+          if (error_for) {
+            error_for.show(type);
+          }
+        };
+
+        var hideErrors = function() {
+          $scope.show_error = false;
+
+          if (error_for) {
+            error_for.hide(type);
+          }
+        };
       }
     };
   });

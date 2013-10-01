@@ -66,6 +66,8 @@ angular.module('ra.form').
         },
 
         submit: function() {
+          var valid = true;
+
           _.each(this.submitCallbacks, function(callback) {
             if (_.isFunction(callback)) {
               callback();
@@ -73,10 +75,10 @@ angular.module('ra.form').
           });
 
           if (_.isFunction(this.validation)) {
-            this.validation();
+            valid = this.validation();
           }
 
-          if (this.$valid) {
+          if (this.$valid && valid !== false) {
             this.submitting = true;
             this.update();
           } else {
