@@ -1,6 +1,6 @@
 {
   "name": "angular-ra-form",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "AngularJS Module: form extensions",
   "main": "angular-ra-form.js",
   "directories": {
