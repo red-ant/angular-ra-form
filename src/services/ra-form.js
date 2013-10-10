@@ -33,7 +33,7 @@ angular.module('ra.form').
 
         setValidity: function(field, key, value) {
           this[field].$setValidity(key, value);
-          this.showErrors(!value);
+          this.showErrors(field);
         },
 
         errorOn: function(field, key) {
