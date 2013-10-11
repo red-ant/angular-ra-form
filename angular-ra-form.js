@@ -213,7 +213,12 @@ angular.module('ra.form').
 
         setValidity: function(field, key, value) {
           this[field].$setValidity(key, value);
-          this.showErrors(field);
+
+          if (value === true) {
+            this.hideErrors(field);
+          } else {
+            this.showErrors(field);
+          }
         },
 
         errorOn: function(field, key) {
