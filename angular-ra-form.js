@@ -39,6 +39,10 @@ angular.module('ra.form').
       template:   '<span class="text-danger" ng-show="show_error" ng-transclude></span>',
       transclude: true,
       link: function($scope, element, attr, controller) {
+        function trim(string) {
+          return string.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
+        }
+
         var form      = controller[0],
             error_for = controller[1];
 
@@ -50,8 +54,8 @@ angular.module('ra.form').
         } else {
           var validation_exp = attr.errorOn.split(',');
 
-          field = _.str.trim(validation_exp[0]);
-          type  = _.str.trim(validation_exp[1]);
+          field = trim(validation_exp[0]);
+          type  = trim(validation_exp[1]);
         }
 
         var getField = function() {
