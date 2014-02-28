@@ -5,23 +5,26 @@ angular.module('ra.form').
   directive('raForm', function(raForm) {
     return {
       restrict: 'A',
-      require:  'form',
-      link: function($scope, element, attr, controller) {
-        var actions = $scope[attr.raForm];
+      require:  ['raForm', 'form'],
+
+      controller: raForm,
+
+      link: function($scope, element, attr, controllers) {
+        var ra_form_controller = controllers[0],
+            form_controller    = controllers[1],
+            decorator          = $scope.$eval(attr.raForm);
 
         // Make sure an update callback is passed
-        if (_.isUndefined(actions) || _.isFunction(actions.update) === false) {
+        if (_.isUndefined(decorator) || _.isFunction(decorator.update) === false) {
           throw new Error(
             'You must provide an update callback. e.g. <form ra-form="form_events">,' +
             'where $scope.form_events = { update: callbackFn }'
           );
         }
 
-        var form_controller = $scope[controller.$name];
-        _.extend(form_controller, raForm());
-        _.extend(form_controller, actions);
-
-        $scope[controller.$name] = form_controller;
+        // Decorate ng-form controller
+        _.extend(form_controller, ra_form_controller);
+        _.extend(form_controller, decorator);
       }
     };
   });

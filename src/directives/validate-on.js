@@ -4,7 +4,7 @@ angular.module('ra.form').
 
   directive('validateOn', function() {
     return {
-      require: ['^form', 'ngModel'],
+      require: ['^raForm', 'ngModel'],
       restrict: 'A',
       link: function($scope, element, attr, controller) {
         var formController  = controller[0],
