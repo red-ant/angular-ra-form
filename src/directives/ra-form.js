@@ -24,6 +24,7 @@ angular.module('ra.form').
 
         // Decorate ng-form controller
         _.extend(form_controller, ra_form_controller);
+        _.extend(form_controller, raForm.prototype);
         _.extend(form_controller, decorator);
       }
     };

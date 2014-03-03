@@ -133,6 +133,7 @@ angular.module('ra.form').
 
         // Decorate ng-form controller
         _.extend(form_controller, ra_form_controller);
+        _.extend(form_controller, raForm.prototype);
         _.extend(form_controller, decorator);
       }
     };
@@ -190,93 +191,95 @@ angular.module('ra.form').
 angular.module('ra.form').
 
   factory('raForm', function() {
-    return function() {
-      return {
-        initialized: true,
-        submitting: false,
-        submitCallbacks: [],
+    var raForm = function raForm() {
+      this.initialized     = true;
+      this.submitting      = false;
+      this.submitCallbacks = [];
+    };
 
-        showErrors: function(field) {
-          if (field && this[field]) {
-            this[field].show_errors = true;
-          }
-        },
+    _.extend(raForm.prototype, {
+      showErrors: function(field) {
+        if (field && this[field]) {
+          this[field].show_errors = true;
+        }
+      },
 
-        hideErrors: function(field) {
-          if (field && this[field]) {
-            this[field].show_errors = false;
-          }
-        },
+      hideErrors: function(field) {
+        if (field && this[field]) {
+          this[field].show_errors = false;
+        }
+      },
 
-        showErrorsOnInValid: function(field) {
-          var $this = this;
+      showErrorsOnInValid: function(field) {
+        var $this = this;
 
-          _.each($this.$error, function(errors, type) {
-            _.each(errors, function(error) {
-              $this.showErrors(error.$name);
-            });
+        _.each($this.$error, function(errors, type) {
+          _.each(errors, function(error) {
+            $this.showErrors(error.$name);
           });
-        },
+        });
+      },
 
-        setValidity: function(field, key, value) {
-          this[field].$setValidity(key, value);
+      setValidity: function(field, key, value) {
+        this[field].$setValidity(key, value);
 
-          if (value === true) {
-            this.hideErrors(field);
-          } else {
-            this.showErrors(field);
-          }
-        },
-
-        errorOn: function(field, key) {
-          if (this[field] && this[field].show_errors) {
-            return this[field].show_errors && this[field].$error[key];
-          }
-        },
-
-        focus: function(field) {
+        if (value === true) {
           this.hideErrors(field);
-        },
-
-        blur: function(field) {
-          this.change(field);
+        } else {
           this.showErrors(field);
-        },
+        }
+      },
 
-        change: function(field) {
-          if (this.validations) {
-            var validation = this.validations[field];
+      errorOn: function(field, key) {
+        if (this[field] && this[field].show_errors) {
+          return this[field].show_errors && this[field].$error[key];
+        }
+      },
 
-            if (_.isFunction(validation)) {
-              validation();
-            }
-          }
-        },
+      focus: function(field) {
+        this.hideErrors(field);
+      },
 
-        onSubmit: function(callback) {
-          this.submitCallbacks.push(callback);
-        },
+      blur: function(field) {
+        this.change(field);
+        this.showErrors(field);
+      },
 
-        submit: function() {
-          var valid = true;
+      change: function(field) {
+        if (this.validations) {
+          var validation = this.validations[field];
 
-          _.each(this.submitCallbacks, function(callback) {
-            if (_.isFunction(callback)) {
-              callback();
-            }
-          });
-
-          if (_.isFunction(this.validation)) {
-            valid = this.validation();
-          }
-
-          if (this.$valid && valid !== false) {
-            this.submitting = true;
-            this.update();
-          } else {
-            this.showErrorsOnInValid();
+          if (_.isFunction(validation)) {
+            validation();
           }
         }
-      };
-    };
+      },
+
+      onSubmit: function(callback) {
+        this.submitCallbacks.push(callback);
+      },
+
+      submit: function() {
+        var valid = true;
+
+        _.each(this.submitCallbacks, function(callback) {
+          if (_.isFunction(callback)) {
+            callback();
+          }
+        });
+
+        if (_.isFunction(this.validation)) {
+          valid = this.validation();
+        }
+
+        if (this.$valid && valid !== false) {
+          this.submitting = true;
+          this.update();
+        } else {
+          this.showErrorsOnInValid();
+        }
+      }
+    });
+
+    return raForm;
   });
