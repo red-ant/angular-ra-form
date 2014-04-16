@@ -7,12 +7,14 @@ angular.module('ra.form').
       restrict: 'A',
       require:  ['raForm', 'form'],
 
-      controller: raForm,
+      controller: function() {
+        return new raForm();
+      },
 
       link: function($scope, element, attr, controllers) {
-        var ra_form_controller = controllers[0],
-            form_controller    = controllers[1],
-            decorator          = $scope.$eval(attr.raForm);
+        var ra_form   = controllers[0],
+            ng_form   = controllers[1],
+            decorator = $scope.$eval(attr.raForm);
 
         // Make sure an update callback is passed
         if (_.isUndefined(decorator) || _.isFunction(decorator.update) === false) {
@@ -22,10 +24,13 @@ angular.module('ra.form').
           );
         }
 
+        // Set models
+        ra_form.setFields(ng_form);
+
         // Decorate ng-form controller
-        _.extend(form_controller, ra_form_controller);
-        _.extend(form_controller, raForm.prototype);
-        _.extend(form_controller, decorator);
+        _.extend(ng_form, ra_form);
+        _.extend(ng_form, raForm.prototype);
+        _.extend(ng_form, decorator);
       }
     };
   });

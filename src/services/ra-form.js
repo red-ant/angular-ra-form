@@ -10,19 +10,23 @@ angular.module('ra.form').
     };
 
     _.extend(raForm.prototype, {
-      showErrors: function(field) {
-        if (field && this[field]) {
-          this[field].show_errors = true;
+      showErrors: function(field_name) {
+        var field = this.getField(field_name);
+
+        if (field) {
+          field.show_errors = true;
         }
       },
 
-      hideErrors: function(field) {
-        if (field && this[field]) {
-          this[field].show_errors = false;
+      hideErrors: function(field_name) {
+        var field = this.getField(field_name);
+
+        if (field) {
+          field.show_errors = false;
         }
       },
 
-      showErrorsOnInValid: function(field) {
+      showErrorsOnInValid: function(field_name) {
         var $this = this;
 
         _.each($this.$error, function(errors, type) {
@@ -32,34 +36,48 @@ angular.module('ra.form').
         });
       },
 
-      setValidity: function(field, key, value) {
-        this[field].$setValidity(key, value);
+      setValidity: function(field_name, key, value) {
+        var field = this.getField(field_name);
+
+        if (field) {
+          field.$setValidity(key, value);
+        }
 
         if (value === true) {
-          this.hideErrors(field);
+          this.hideErrors(field_name);
         } else {
-          this.showErrors(field);
+          this.showErrors(field_name);
         }
       },
 
-      errorOn: function(field, key) {
-        if (this[field] && this[field].show_errors) {
-          return this[field].show_errors && this[field].$error[key];
+      setFields: function(fields) {
+        this.fields = fields;
+      },
+
+      getField: function(field_name) {
+        return this.fields && this.fields[field_name];
+      },
+
+      errorOn: function(field_name, key) {
+        var field = this.getField(field_name);
+
+        if (field && field.show_errors) {
+          return field.show_errors && field.$error[key];
         }
       },
 
-      focus: function(field) {
-        this.hideErrors(field);
+      focus: function(field_name) {
+        this.hideErrors(field_name);
       },
 
-      blur: function(field) {
-        this.change(field);
-        this.showErrors(field);
+      blur: function(field_name) {
+        this.change(field_name);
+        this.showErrors(field_name);
       },
 
-      change: function(field) {
+      change: function(field_name) {
         if (this.validations) {
-          var validation = this.validations[field];
+          var validation = this.validations[field_name];
 
           if (_.isFunction(validation)) {
             validation();
